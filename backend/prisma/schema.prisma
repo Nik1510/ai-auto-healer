@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Incident {
+  id         String      @id @default(uuid())
+  service    String
+  severity   String
+  status     String      @default("OPEN")
+  rootCause  String?
+  createdAt  DateTime    @default(now())
+  logs       Log[]
+  aiAnalysis AiAnalysis?
+}
+
+model Log {
+  id         String    @id @default(uuid())
+  incidentId String?
+  incident   Incident? @relation(fields: [incidentId], references: [id], onDelete: SetNull)
+  service    String
+  level      String
+  message    String
+  timestamp  DateTime  @default(now())
+}
+
+model AiAnalysis {
+  id              String   @id @default(uuid())
+  incidentId      String   @unique
+  incident        Incident @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+  severity        String
+  confidence      Int
+  rootCause       String
+  explanation     String
+  fix             String
+  commands        String[]
+  affectedService String?
+  createdAt       DateTime @default(now())
+}
