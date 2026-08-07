@@ -6,6 +6,7 @@ zerops:
       buildCommands:
         - cd backend && npm install
         - cd backend && npx prisma generate
+        - cd backend && npm run build
       deployFiles:
         - backend/package.json
         - backend/node_modules
@@ -26,15 +27,13 @@ zerops:
         - cd frontend && npm install
         - cd frontend && npm run build
       deployFiles:
-        - frontend/.next
+        - frontend/.next/standalone/frontend/.
+        - frontend/.next/standalone/node_modules
+        - frontend/.next/static
         - frontend/public
-        - frontend/package.json
-        - frontend/package-lock.json
-        - frontend/node_modules
-        - frontend/next.config.js
     run:
       base: nodejs@20
       ports:
         - port: 3000
           httpSupport: true
-      start: npm run start -- -H 0.0.0.0 -p 3000
+      start: HOSTNAME="0.0.0.0" PORT=3000 node server.js
