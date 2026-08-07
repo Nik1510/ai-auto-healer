@@ -7,13 +7,16 @@ zerops:
         - cd backend && npm install
         - cd backend && npx prisma generate
       deployFiles:
-        - backend/dist
         - backend/package.json
         - backend/node_modules
+        - backend/dist
         - backend/prisma
     run:
       base: nodejs@20
-      start: npm start
+      ports:
+        - port: 5000 # Adjust to match your backend port
+          httpSupport: true
+      start: cd backend && npm start
 
   # Frontend Dashboard Configuration
   - setup: frontend
@@ -26,6 +29,7 @@ zerops:
         - frontend/.next
         - frontend/public
         - frontend/package.json
+        - frontend/package-lock.json
         - frontend/node_modules
         - frontend/next.config.js
     run:
@@ -33,4 +37,4 @@ zerops:
       ports:
         - port: 3000
           httpSupport: true
-      start: npm start
+      start: cd frontend && npm run start -- -H 0.0.0.0 -p 3000
