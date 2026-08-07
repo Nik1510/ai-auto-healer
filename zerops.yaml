@@ -10,7 +10,7 @@ zerops:
         - backend
     run:
       base: nodejs@20
-      start: cd backend && npx tsx src/index.ts
+      start: npm start --prefix backend
 
   # Frontend Dashboard Configuration
   - setup: frontend
@@ -24,6 +24,10 @@ zerops:
         - frontend/public
         - frontend/package.json
         - frontend/node_modules
+        - frontend/next.config.js
     run:
       base: nodejs@20
-      start: cd frontend && npm start
+      ports:
+        - port: 3000
+          httpSupport: true
+      start: npm start --prefix frontend
