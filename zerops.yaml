@@ -14,9 +14,9 @@ zerops:
     run:
       base: nodejs@20
       ports:
-        - port: 5000 # Adjust to match your backend port
+        - port: 5000
           httpSupport: true
-      start: cd backend && npm start
+      start: npm start
 
   # Frontend Dashboard Configuration
   - setup: frontend
@@ -37,4 +37,4 @@ zerops:
       ports:
         - port: 3000
           httpSupport: true
-      start: cd frontend && npm run start -- -H 0.0.0.0 -p 3000
+      start: npm run start -- -H 0.0.0.0 -p 3000
