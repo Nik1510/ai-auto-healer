@@ -7,10 +7,10 @@ zerops:
         - cd backend && npm install
         - cd backend && npx prisma generate
       deployFiles:
-        - backend/package.json
-        - backend/node_modules
-        - backend/dist
-        - backend/prisma
+        - backend/~package.json
+        - backend/~node_modules
+        - backend/~dist
+        - backend/~prisma
     run:
       base: nodejs@20
       start: npm start
