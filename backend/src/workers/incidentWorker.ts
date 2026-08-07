@@ -49,6 +49,32 @@ export const incidentWorker = new Worker(
     // Broadcast updated incident and analysis
     emitIncident(incident);
     
+    // Webhook Notification
+    if (analysis.severity === 'CRITICAL' && process.env.DISCORD_WEBHOOK_URL) {
+      try {
+        await fetch(process.env.DISCORD_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            content: `🚨 **CRITICAL INCIDENT DETECTED** 🚨`,
+            embeds: [{
+              title: `Service Failure: ${incident.service}`,
+              color: 16711680,
+              fields: [
+                { name: 'Incident ID', value: incident.id, inline: true },
+                { name: 'Confidence', value: `${analysis.confidence}%`, inline: true },
+                { name: 'Root Cause', value: analysis.rootCause },
+                { name: 'Recommended Fix', value: analysis.fix }
+              ],
+              timestamp: new Date().toISOString()
+            }]
+          })
+        });
+      } catch (err) {
+        console.error('[Worker] Failed to send webhook:', err);
+      }
+    }
+
     return { success: true, analysisId: aiAnalysis.id };
   },
   { connection }

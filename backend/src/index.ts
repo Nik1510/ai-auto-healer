@@ -9,6 +9,7 @@ import incidentsRouter from './api/incidents';
 import fixRouter from './api/fix';
 import githubRouter from './api/github';
 import './workers/incidentWorker'; // Initialize worker
+import { startTelemetry } from './utils/demo-log-generator';
 
 // Load env from root
 dotenv.config({ path: path.join(__dirname, '../../.env') });
@@ -36,4 +37,5 @@ const PORT = process.env.PORT || 5000;
 
 httpServer.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
+  startTelemetry();
 });

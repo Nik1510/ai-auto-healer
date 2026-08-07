@@ -71,14 +71,20 @@ async function runTests() {
     results.push({ name: '3. Incident Creation & BullMQ Queue Test', status: 'FAIL', error: e.message });
   }
 
-  // wait for BullMQ worker to process
-  await new Promise(r => setTimeout(r, 2000));
-
   // 4. AI Processing & Storage Test
   try {
     if (!incidentId) throw new Error('No incident ID from previous step');
-    const r4 = await fetchJson('http://localhost:5000/api/incidents');
-    const inc = r4.body.find(i => i.id === incidentId);
+    let inc = null;
+    console.log('Polling for AI processing (up to 15s)...');
+    for (let attempt = 0; attempt < 8; attempt++) {
+      const r4 = await fetchJson('http://localhost:5000/api/incidents');
+      inc = r4.body.find(i => i.id === incidentId);
+      if (inc && inc.aiAnalysis && inc.aiAnalysis.rootCause) {
+        break;
+      }
+      await new Promise(r => setTimeout(r, 2000));
+    }
+    
     if (inc && inc.aiAnalysis && inc.aiAnalysis.rootCause) {
       results.push({ name: '4. AI Processing & Storage Test', status: 'PASS' });
     } else {

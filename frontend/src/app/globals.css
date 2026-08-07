@@ -1,33 +1,25 @@
 @import "tailwindcss";
 
 :root {
-  --background: 240 10% 3.9%;
-  --foreground: 0 0% 98%;
+  --background: 0 0% 0%;
+  --foreground: 0 0% 100%;
 }
 
 body {
-  background-color: #0a0a0c;
+  background-color: #000000;
   color: white;
-}
-
-.glass-panel {
-  background-color: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.75rem;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .terminal-scroll::-webkit-scrollbar {
   width: 6px;
 }
 .terminal-scroll::-webkit-scrollbar-track {
-  background: rgba(0,0,0,0.1);
+  background: #000000;
+  border-left: 1px solid #262626; /* neutral-800 */
 }
 .terminal-scroll::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.2);
-  border-radius: 4px;
+  background: #404040; /* neutral-700 */
 }
 .terminal-scroll::-webkit-scrollbar-thumb:hover {
-  background: rgba(255,255,255,0.3);
+  background: #737373; /* neutral-500 */
 }

@@ -14,21 +14,42 @@ const sendLog = async (service: string, level: string, message: string) => {
   }
 };
 
-const runDemo = async () => {
-  console.log('Starting demo log generator...');
-  
-  await sendLog('auth-service', 'INFO', 'User login successful');
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  await sendLog('payment-service', 'INFO', 'Processing payment');
-  await new Promise(resolve => setTimeout(resolve, 1500));
-  
-  await sendLog('database', 'ERROR', 'Database connection timeout');
-  await new Promise(resolve => setTimeout(resolve, 1000));
+const randomErrors = [
+  'Error: connect ETIMEDOUT to Redis cluster (Cluster failover failed)',
+  'Error: Postgres connection pool exhausted (max connections 100)',
+  'Error: JWT signature verification failed due to rotated keys',
+  'Error: Stripe API rate limit exceeded (HTTP 429)',
+  'Error: Garbage collection paused for > 5s (Heap OOM)'
+];
 
-  await sendLog('redis', 'ERROR', 'Redis unavailable');
+export const startTelemetry = () => {
+  console.log('Starting continuous telemetry stream...');
   
-  console.log('Finished demo log generation.');
+  const services = ['auth-service', 'payment-service', 'gateway-service', 'inventory-service', 'database'];
+  const messages = [
+    'User login successful',
+    'Processing payment',
+    'Gateway routing request',
+    'Inventory item retrieved',
+    'Database query executed',
+    'Session refreshed',
+    'Cache hit'
+  ];
+
+  setInterval(async () => {
+    const service = services[Math.floor(Math.random() * services.length)];
+    
+    // ~2.5% chance to trigger an unannounced random incident
+    const isError = Math.random() < 0.025;
+
+    if (isError) {
+      const errorMsg = randomErrors[Math.floor(Math.random() * randomErrors.length)];
+      await sendLog(service, 'ERROR', errorMsg);
+    } else {
+      const message = messages[Math.floor(Math.random() * messages.length)];
+      await sendLog(service, 'INFO', message);
+    }
+  }, 1500); // Every 1.5 seconds
 };
 
-runDemo();
+// Removed standalone runDemo() execution so it can be imported

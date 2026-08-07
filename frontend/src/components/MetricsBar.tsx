@@ -1,25 +1,30 @@
 import React from 'react';
-import { Server, AlertOctagon, Activity, Zap } from 'lucide-react';
 
-export const MetricsBar = ({ totalIncidents, openCritical, logsPerSec }: { totalIncidents: number, openCritical: number, logsPerSec: number }) => {
+export const MetricsBar = ({ totalIncidents, openCritical, logsPerSec, healthyServicesCount }: { totalIncidents: number, openCritical: number, logsPerSec: number, healthyServicesCount: number }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-      <MetricCard title="Healthy Services" value="12/12" icon={<Server className="w-5 h-5 text-emerald-400" />} />
-      <MetricCard title="Total Incidents" value={totalIncidents.toString()} icon={<Activity className="w-5 h-5 text-blue-400" />} />
-      <MetricCard title="Open Critical" value={openCritical.toString()} icon={<AlertOctagon className="w-5 h-5 text-red-400" />} />
-      <MetricCard title="Log Stream" value={`${logsPerSec}/s`} icon={<Zap className="w-5 h-5 text-yellow-400" />} />
+    <div className="w-full border-b border-neutral-800 bg-[#000000]">
+      <table className="w-full text-left font-mono text-xs uppercase tracking-widest text-neutral-400">
+        <tbody>
+          <tr className="border-b border-neutral-800 divide-x divide-neutral-800">
+            <td className="p-4 w-1/4 align-top">
+              <div className="mb-2">HEALTHY SERVICES</div>
+              <div className="text-2xl font-bold text-white tracking-tighter">{healthyServicesCount}/12</div>
+            </td>
+            <td className="p-4 w-1/4 align-top">
+              <div className="mb-2">TOTAL INCIDENTS</div>
+              <div className="text-2xl font-bold text-white tracking-tighter">{totalIncidents}</div>
+            </td>
+            <td className="p-4 w-1/4 align-top">
+              <div className="mb-2">OPEN CRITICAL</div>
+              <div className="text-2xl font-bold text-white tracking-tighter">{openCritical}</div>
+            </td>
+            <td className="p-4 w-1/4 align-top">
+              <div className="mb-2">LOG STREAM</div>
+              <div className="text-2xl font-bold text-white tracking-tighter">{logsPerSec}/s</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 };
-
-const MetricCard = ({ title, value, icon }: { title: string, value: string, icon: React.ReactNode }) => (
-  <div className="glass-panel p-5 flex items-center gap-4">
-    <div className="p-3 bg-white/5 rounded-xl border border-white/10">
-      {icon}
-    </div>
-    <div>
-      <p className="text-sm font-medium text-white/50">{title}</p>
-      <h3 className="text-2xl font-bold mt-1">{value}</h3>
-    </div>
-  </div>
-);
