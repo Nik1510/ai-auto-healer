@@ -40,11 +40,42 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
   res.status(500).json({ error: 'Internal Server Error' });
 });
 
-const PORT = process.env.PORT || 5000;
+const startServer = async () => {
+  console.log('--- STARTING AI AUTO HEALER BACKEND ---');
 
-httpServer.listen(PORT as number, '0.0.0.0', () => {
-  console.log(`Server listening on port ${PORT}`);
-  startTelemetry();
+  const PORT = process.env.PORT || 5000;
+
+  // Environment Validation
+  if (!process.env.DATABASE_URL) {
+    console.warn('⚠️  WARNING: DATABASE_URL is not set. Database operations will fail.');
+  } else {
+    console.log('✅ DATABASE_URL is present.');
+  }
+
+  if (!process.env.REDIS_URL && !process.env.REDIS_HOST) {
+    console.warn('⚠️  WARNING: Neither REDIS_URL nor REDIS_HOST are set. Background queues may fail.');
+  } else {
+    console.log('✅ Redis configuration detected.');
+  }
+
+  // Test Database Connection Gracefully
+  try {
+    await prisma.$connect();
+    console.log('✅ Prisma successfully connected to PostgreSQL.');
+  } catch (dbError) {
+    console.error('❌ Prisma failed to connect to PostgreSQL on startup:', dbError);
+    console.warn('⚠️  Continuing boot sequence, but expect database queries to fail...');
+  }
+
+  // Start HTTP Server explicitly on 0.0.0.0
+  httpServer.listen(PORT as number, '0.0.0.0', () => {
+    console.log(`🚀 Server successfully bound to 0.0.0.0 and listening on port ${PORT}`);
+    startTelemetry();
+  });
+};
+
+startServer().catch(err => {
+  console.error('❌ Fatal error during server startup:', err);
 });
 
 // Graceful shutdown
