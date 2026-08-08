@@ -10,6 +10,9 @@ zerops:
         - backend
     run:
       base: nodejs@20
+      ports:
+        - port: 5000
+          httpSupport: true
       start: cd backend && npm start
 
   # Frontend Dashboard Configuration
