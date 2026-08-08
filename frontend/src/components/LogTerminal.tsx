@@ -29,7 +29,8 @@ export const LogTerminal = ({ logs, onClear }: { logs: any[], onClear?: () => vo
     }
   }, [displayedLogs, isPaused]);
 
-  const filteredLogs = displayedLogs.filter(log => {
+  const safeDisplayedLogs = Array.isArray(displayedLogs) ? displayedLogs : [];
+  const filteredLogs = safeDisplayedLogs.filter(log => {
     if (filter === 'ALL') return true;
     if (filter === 'ERRORS') return log.level === 'ERROR';
     if (filter === 'REMEDIATIONS') return log.level === 'ACTION';

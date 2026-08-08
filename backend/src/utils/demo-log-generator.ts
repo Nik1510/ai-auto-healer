@@ -1,6 +1,6 @@
 const sendLog = async (service: string, level: string, message: string) => {
   try {
-    const response = await fetch('http://localhost:5000/api/log', {
+    const response = await fetch(`http://127.0.0.1:${process.env.PORT || 5000}/api/log`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -22,6 +22,8 @@ const randomErrors = [
   'Error: Garbage collection paused for > 5s (Heap OOM)'
 ];
 
+let telemetryInterval: NodeJS.Timeout | null = null;
+
 export const startTelemetry = () => {
   console.log('Starting continuous telemetry stream...');
   
@@ -36,7 +38,11 @@ export const startTelemetry = () => {
     'Cache hit'
   ];
 
-  setInterval(async () => {
+  if (telemetryInterval) {
+    clearInterval(telemetryInterval);
+  }
+
+  telemetryInterval = setInterval(async () => {
     const service = services[Math.floor(Math.random() * services.length)];
     
     // ~2.5% chance to trigger an unannounced random incident
@@ -50,6 +56,14 @@ export const startTelemetry = () => {
       await sendLog(service, 'INFO', message);
     }
   }, 1500); // Every 1.5 seconds
+};
+
+export const stopTelemetry = () => {
+  if (telemetryInterval) {
+    clearInterval(telemetryInterval);
+    telemetryInterval = null;
+    console.log('Telemetry stream stopped.');
+  }
 };
 
 // Removed standalone runDemo() execution so it can be imported

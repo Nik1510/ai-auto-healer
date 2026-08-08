@@ -15,6 +15,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-1fd-5000.ny1
 export default function Dashboard() {
   const { socket, isConnected } = useSocket();
   const [logs, setLogs] = useState<any[]>([]);
+  const safeLogs = Array.isArray(logs) ? logs : [];
   const [incidents, setIncidents] = useState<any[]>([]);
   const [selectedIncident, setSelectedIncident] = useState<any | null>(null);
   const [isAutonomous, setIsAutonomous] = useState(false);
@@ -84,8 +85,8 @@ export default function Dashboard() {
 
   // Dynamic logs per second based on recent logs (last 5 seconds)
   const now = new Date().getTime();
-  const recentLogsCount = logs.filter(l => (now - new Date(l.timestamp).getTime()) < 5000).length;
-  const logsPerSec = logs.length > 0 ? (recentLogsCount / 5).toFixed(1) : 0; 
+  const recentLogsCount = safeLogs.filter(l => (now - new Date(l.timestamp).getTime()) < 5000).length;
+  const logsPerSec = safeLogs.length > 0 ? (recentLogsCount / 5).toFixed(1) : 0; 
 
   return (
     <div className="min-h-screen bg-black text-white font-mono flex flex-col">
@@ -105,7 +106,7 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-1 xl:grid-cols-2 flex-1 border-t border-neutral-800">
           <div className="border-r border-neutral-800">
-            <LogTerminal logs={logs} onClear={() => setLogs([])} />
+            <LogTerminal logs={safeLogs} onClear={() => setLogs([])} />
           </div>
           <div>
             <IncidentTable incidents={safeIncidents} onView={setSelectedIncident} />
