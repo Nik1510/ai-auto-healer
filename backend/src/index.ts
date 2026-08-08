@@ -16,6 +16,7 @@ import { startTelemetry } from './utils/demo-log-generator';
 dotenv.config({ path: path.join(__dirname, '../../.env') });
 
 const app = express();
+app.set('trust proxy', true);
 const httpServer = createServer(app);
 
 // Initialize Socket.io
@@ -43,7 +44,8 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 const startServer = async () => {
   console.log('--- STARTING AI AUTO HEALER BACKEND ---');
 
-  const PORT = Number(process.env.PORT) || 5000;
+  const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 5000;
+  console.log(`[BOOT] Binding to 0.0.0.0:${PORT}...`);
 
   console.log(`[DIAGNOSTIC] PORT: ${process.env.PORT || 'Not Set (Defaulting to 5000)'}`);
   
@@ -102,3 +104,11 @@ const shutdown = async () => {
 
 process.on('SIGTERM', shutdown);
 process.on('SIGINT', shutdown);
+
+process.on('uncaughtException', (err) => {
+  console.error('[FATAL BOOT ERROR]: Uncaught Exception:', err);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('[FATAL BOOT ERROR]: Unhandled Rejection at:', promise, 'reason:', reason);
+});
