@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Download, GitPullRequest, AlertTriangle, Zap, CheckCircle2, Copy, Check } from 'lucide-react';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-1fd-5000.ny1.zerops.app';
+
 export const IncidentModal = ({ incident, onClose }: { incident: any, onClose: () => void }) => {
   const [prLoading, setPrLoading] = useState(false);
   const [prUrl, setPrUrl] = useState<string | null>(null);
@@ -14,7 +16,7 @@ export const IncidentModal = ({ incident, onClose }: { incident: any, onClose: (
 
   const handleDownload = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/fix/${incident.id}`, { method: 'POST' });
+      const res = await fetch(`${API_URL}/api/fix/${incident.id}`, { method: 'POST' });
       const data = await res.json();
       if (data.script) {
         const blob = new Blob([data.script], { type: 'text/plain' });
@@ -32,7 +34,7 @@ export const IncidentModal = ({ incident, onClose }: { incident: any, onClose: (
   const handleCreatePR = async () => {
     setPrLoading(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/github/pr/${incident.id}`, { method: 'POST' });
+      const res = await fetch(`${API_URL}/api/github/pr/${incident.id}`, { method: 'POST' });
       const data = await res.json();
       if (data.success) {
         setPrUrl(data.prUrl);
@@ -149,7 +151,7 @@ export const IncidentModal = ({ incident, onClose }: { incident: any, onClose: (
                           const btn = document.getElementById(`heal-btn-${incident.id}`);
                           if (btn) btn.innerHTML = '[ EXECUTING... ]';
                           
-                          await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/incidents/${incident.id}/remediate`, { method: 'POST' });
+                          await fetch(`${API_URL}/api/incidents/${incident.id}/remediate`, { method: 'POST' });
                           setTimeout(() => onClose(), 800);
                         }}
                         id={`heal-btn-${incident.id}`}

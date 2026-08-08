@@ -10,6 +10,8 @@ import { IncidentTable } from '@/components/IncidentTable';
 import { IncidentModal } from '@/components/IncidentModal';
 import { HeroSection } from '@/components/HeroSection';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-1fd-5000.ny1.zerops.app';
+
 export default function Dashboard() {
   const { socket, isConnected } = useSocket();
   const [logs, setLogs] = useState<any[]>([]);
@@ -19,7 +21,7 @@ export default function Dashboard() {
 
   // Initial fetch
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/incidents`)
+    fetch(`${API_URL}/api/incidents`)
       .then(res => res.json())
       .then(data => setIncidents(data))
       .catch(err => console.error(err));
@@ -66,7 +68,7 @@ export default function Dashboard() {
 
     openCritical.forEach(async (incident) => {
       try {
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/incidents/${incident.id}/remediate`, { method: 'POST' });
+        await fetch(`${API_URL}/api/incidents/${incident.id}/remediate`, { method: 'POST' });
       } catch (err) {
         console.error('Failed to auto-remediate:', err);
       }

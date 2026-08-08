@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Activity, ShieldAlert, Wifi, WifiOff, Zap } from 'lucide-react';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-1fd-5000.ny1.zerops.app';
+
 const SCENARIOS = [
   { service: 'inventory-service', message: 'Database connection timeout', label: 'PostgreSQL Pool Exhaustion' },
   { service: 'auth-service', message: 'Redis Sentinel connection failure', label: 'Redis Sentinel Failure' },
@@ -14,7 +16,7 @@ export const Header = ({ isConnected, isAutonomous, setAutonomous }: { isConnect
   const simulateError = async () => {
     try {
       const scenario = SCENARIOS[selectedScenario];
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/log/simulate`, {
+      await fetch(`${API_URL}/api/log/simulate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
