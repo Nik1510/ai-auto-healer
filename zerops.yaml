@@ -13,7 +13,7 @@ zerops:
       ports:
         - port: 5000
           httpSupport: true
-      start: cd backend && npm start
+      start: sh -c "cd backend && npm start"
 
   # Frontend Dashboard Configuration
   - setup: frontend
