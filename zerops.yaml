@@ -13,7 +13,7 @@ zerops:
       ports:
         - port: 5000
           httpSupport: true
-      start: sh -c "cd backend && npm start"
+      start: sh -c "cd backend && npx prisma db push --accept-data-loss && npm start"
 
   # Frontend Dashboard Configuration
   - setup: frontend
