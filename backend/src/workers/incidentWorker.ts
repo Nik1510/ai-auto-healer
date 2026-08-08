@@ -87,3 +87,7 @@ incidentWorker.on('completed', (job: Job) => {
 incidentWorker.on('failed', (job: Job | undefined, err: Error) => {
   console.error(`[Worker] Job failed for incident: ${job?.data?.incidentId}`, err);
 });
+
+incidentWorker.on('error', (err: Error) => {
+  console.error('[Worker] Redis connection error:', err);
+});
