@@ -14,7 +14,7 @@ export const IncidentModal = ({ incident, onClose }: { incident: any, onClose: (
 
   const handleDownload = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/fix/${incident.id}`, { method: 'POST' });
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/fix/${incident.id}`, { method: 'POST' });
       const data = await res.json();
       if (data.script) {
         const blob = new Blob([data.script], { type: 'text/plain' });
@@ -32,7 +32,7 @@ export const IncidentModal = ({ incident, onClose }: { incident: any, onClose: (
   const handleCreatePR = async () => {
     setPrLoading(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/github/pr/${incident.id}`, { method: 'POST' });
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/github/pr/${incident.id}`, { method: 'POST' });
       const data = await res.json();
       if (data.success) {
         setPrUrl(data.prUrl);
@@ -149,7 +149,7 @@ export const IncidentModal = ({ incident, onClose }: { incident: any, onClose: (
                           const btn = document.getElementById(`heal-btn-${incident.id}`);
                           if (btn) btn.innerHTML = '[ EXECUTING... ]';
                           
-                          await fetch(`http://localhost:5000/api/incidents/${incident.id}/remediate`, { method: 'POST' });
+                          await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/incidents/${incident.id}/remediate`, { method: 'POST' });
                           setTimeout(() => onClose(), 800);
                         }}
                         id={`heal-btn-${incident.id}`}

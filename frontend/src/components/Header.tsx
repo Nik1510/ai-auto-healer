@@ -14,7 +14,7 @@ export const Header = ({ isConnected, isAutonomous, setAutonomous }: { isConnect
   const simulateError = async () => {
     try {
       const scenario = SCENARIOS[selectedScenario];
-      await fetch('http://localhost:5000/api/log/simulate', {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/log/simulate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -19,7 +19,7 @@ export default function Dashboard() {
 
   // Initial fetch
   useEffect(() => {
-    fetch('http://localhost:5000/api/incidents')
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/incidents`)
       .then(res => res.json())
       .then(data => setIncidents(data))
       .catch(err => console.error(err));
@@ -66,7 +66,7 @@ export default function Dashboard() {
 
     openCritical.forEach(async (incident) => {
       try {
-        await fetch(`http://localhost:5000/api/incidents/${incident.id}/remediate`, { method: 'POST' });
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/incidents/${incident.id}/remediate`, { method: 'POST' });
       } catch (err) {
         console.error('Failed to auto-remediate:', err);
       }
