@@ -6,15 +6,11 @@ zerops:
       buildCommands:
         - cd backend && npm install
         - cd backend && npx prisma generate
-        - cd backend && npm run build
       deployFiles:
-        - backend/~package.json
-        - backend/~node_modules
-        - backend/~dist
-        - backend/~prisma
+        - backend
     run:
       base: nodejs@20
-      start: npm start
+      start: cd backend && npm start
 
   # Frontend Dashboard Configuration
   - setup: frontend
