@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
+// Change something like this:
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-1fd-5000.ny1.zerops.app';
 
 export const useSocket = () => {
   const [socket, setSocket] = useState<Socket | null>(null);
