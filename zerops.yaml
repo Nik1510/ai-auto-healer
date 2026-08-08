@@ -24,7 +24,7 @@ zerops:
         - frontend/~public
         - frontend/~package.json
         - frontend/~node_modules
-        - frontend/~next.config.js
+        - frontend/~next.config.ts
     run:
       base: nodejs@20
       ports:
