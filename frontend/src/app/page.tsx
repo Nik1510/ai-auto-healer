@@ -19,6 +19,8 @@ export default function Dashboard() {
   const [selectedIncident, setSelectedIncident] = useState<any | null>(null);
   const [isAutonomous, setIsAutonomous] = useState(false);
 
+  const safeIncidents = Array.isArray(incidents) ? incidents : [];
+
   // Initial fetch
   useEffect(() => {
     fetch(`${API_URL}/api/incidents`)
@@ -62,7 +64,7 @@ export default function Dashboard() {
     if (!isAutonomous) return;
     
     // Find any critical incidents that have an AI analysis with confidence > 80 and are still OPEN
-    const openCritical = incidents.filter(
+    const openCritical = safeIncidents.filter(
       i => i.status === 'OPEN' && i.severity === 'CRITICAL' && i.aiAnalysis && i.aiAnalysis.confidence > 80
     );
 
@@ -75,7 +77,7 @@ export default function Dashboard() {
     });
   }, [incidents, isAutonomous]);
 
-  const openCriticalIncidents = incidents.filter(i => i.status !== 'RESOLVED' && i.severity === 'CRITICAL');
+  const openCriticalIncidents = safeIncidents.filter(i => i.status !== 'RESOLVED' && i.severity === 'CRITICAL');
   const openCritical = openCriticalIncidents.length;
   const activeCriticalServicesCount = new Set(openCriticalIncidents.map(i => i.affectedService)).size;
   const healthyServicesCount = Math.max(0, 12 - activeCriticalServicesCount);
@@ -93,20 +95,20 @@ export default function Dashboard() {
         <HeroSection />
 
         <MetricsBar 
-          totalIncidents={incidents.length} 
+          totalIncidents={safeIncidents.length} 
           openCritical={openCritical}
           logsPerSec={Number(logsPerSec)}
           healthyServicesCount={healthyServicesCount}
         />
 
-        <ServiceTopology incidents={incidents} />
+        <ServiceTopology incidents={safeIncidents} />
 
         <div className="grid grid-cols-1 xl:grid-cols-2 flex-1 border-t border-neutral-800">
           <div className="border-r border-neutral-800">
             <LogTerminal logs={logs} onClear={() => setLogs([])} />
           </div>
           <div>
-            <IncidentTable incidents={incidents} onView={setSelectedIncident} />
+            <IncidentTable incidents={safeIncidents} onView={setSelectedIncident} />
           </div>
         </div>
       </div>

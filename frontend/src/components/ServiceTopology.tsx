@@ -12,8 +12,9 @@ const SERVICES = [
 ];
 
 export const ServiceTopology = ({ incidents }: { incidents: any[] }) => {
+  const safeIncidents = Array.isArray(incidents) ? incidents : [];
   const openIncidentServices = new Set(
-    incidents
+    safeIncidents
       .filter(i => i.status !== 'RESOLVED' && i.severity === 'CRITICAL')
       .map(i => i.affectedService)
   );

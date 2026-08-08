@@ -4,6 +4,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const IncidentTable = ({ incidents, onView }: { incidents: any[], onView: (inc: any) => void }) => {
+  const safeIncidents = Array.isArray(incidents) ? incidents : [];
   const getSeverityColor = (sev: string) => {
     if (sev === 'CRITICAL') return 'bg-red-600 text-white border-red-600';
     if (sev === 'ERROR') return 'bg-orange-600 text-white border-orange-600';
@@ -35,13 +36,13 @@ export const IncidentTable = ({ incidents, onView }: { incidents: any[], onView:
             </tr>
           </thead>
           <tbody>
-            {incidents.length === 0 ? (
+            {safeIncidents.length === 0 ? (
               <tr>
                 <td colSpan={5} className="text-center py-8 text-slate-500 italic">No incidents reported</td>
               </tr>
             ) : (
               <AnimatePresence>
-                {incidents.map((inc) => (
+                {safeIncidents.map((inc) => (
                   <motion.tr 
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
