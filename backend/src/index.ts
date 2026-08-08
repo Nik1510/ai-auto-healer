@@ -3,6 +3,7 @@ import cors from 'cors';
 import { createServer } from 'http';
 import dotenv from 'dotenv';
 import path from 'path';
+import { execSync } from 'child_process';
 import prisma from './utils/prisma';
 import { initSocket } from './websocket/socket';
 import logsRouter from './api/logs';
@@ -72,6 +73,11 @@ const startServer = async () => {
   try {
     await prisma.$connect();
     console.log('✅ Prisma successfully connected to PostgreSQL.');
+    
+    // Automatic Prisma Schema Initialization
+    console.log('🔄 Pushing Prisma schema to database...');
+    execSync('npx prisma db push --accept-data-loss', { stdio: 'inherit' });
+    console.log('✅ Prisma schema initialized successfully.');
   } catch (dbError) {
     console.error('❌ Prisma failed to connect to PostgreSQL on startup:', dbError);
     console.warn('⚠️  Continuing boot sequence, but expect database queries to fail...');
