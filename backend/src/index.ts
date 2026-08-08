@@ -43,19 +43,27 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 const startServer = async () => {
   console.log('--- STARTING AI AUTO HEALER BACKEND ---');
 
-  const PORT = process.env.PORT || 5000;
+  const PORT = Number(process.env.PORT) || 5000;
+
+  console.log(`[DIAGNOSTIC] PORT: ${process.env.PORT || 'Not Set (Defaulting to 5000)'}`);
+  
+  const maskSecret = (secret: string | undefined) => {
+    if (!secret) return 'MISSING';
+    if (secret.length <= 8) return '***';
+    return `${secret.substring(0, 4)}...${secret.substring(secret.length - 4)}`;
+  };
+  
+  console.log(`[DIAGNOSTIC] DATABASE_URL: ${maskSecret(process.env.DATABASE_URL)}`);
+  console.log(`[DIAGNOSTIC] REDIS_URL: ${maskSecret(process.env.REDIS_URL)}`);
+  console.log(`[DIAGNOSTIC] REDIS_HOST: ${process.env.REDIS_HOST || 'MISSING'}`);
 
   // Environment Validation
   if (!process.env.DATABASE_URL) {
     console.warn('⚠️  WARNING: DATABASE_URL is not set. Database operations will fail.');
-  } else {
-    console.log('✅ DATABASE_URL is present.');
   }
 
   if (!process.env.REDIS_URL && !process.env.REDIS_HOST) {
     console.warn('⚠️  WARNING: Neither REDIS_URL nor REDIS_HOST are set. Background queues may fail.');
-  } else {
-    console.log('✅ Redis configuration detected.');
   }
 
   // Test Database Connection Gracefully
@@ -68,10 +76,14 @@ const startServer = async () => {
   }
 
   // Start HTTP Server explicitly on 0.0.0.0
-  httpServer.listen(PORT as number, '0.0.0.0', () => {
-    console.log(`🚀 Server successfully bound to 0.0.0.0 and listening on port ${PORT}`);
-    startTelemetry();
-  });
+  try {
+    httpServer.listen(PORT, '0.0.0.0', () => {
+      console.log(`[SERVER_SUCCESS] Backend server listening on 0.0.0.0:${PORT}`);
+      startTelemetry();
+    });
+  } catch (serverError) {
+    console.error('❌ Fatal error binding HTTP server:', serverError);
+  }
 };
 
 startServer().catch(err => {
