@@ -6,7 +6,6 @@ zerops:
       buildCommands:
         - cd backend && npm install
         - cd backend && npx prisma generate
-        - cd backend && npx prisma db push --accept-data-loss
       deployFiles:
         - backend
     run:
